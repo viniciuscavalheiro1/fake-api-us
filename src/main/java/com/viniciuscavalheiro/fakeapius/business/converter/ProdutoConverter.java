@@ -33,6 +33,19 @@ public class ProdutoConverter {
                 .build();
     }
 
+    public ProdutoEntity toEntityUpdate(ProdutoEntity entity, ProductsDTO dto, String id) {
+        return ProdutoEntity.builder()
+                .id(id)
+                .nome(dto.getNome() != null ? dto.getNome() : entity.getNome())
+                .categoria(dto.getCategoria() != null ? dto.getCategoria() : entity.getCategoria())
+                .descricao(dto.getDescricao() != null ? dto.getDescricao() : entity.getDescricao())
+                .preco(dto.getPreco() != null ? dto.getPreco() : entity.getPreco())
+                .imagem(dto.getImagem() != null ? dto.getImagem() : entity.getImagem())
+                .dataInclusao(entity.getDataInclusao())
+                .dataAtualizacao(LocalDateTime.now())
+                .build();
+    }
+
     public List<ProductsDTO> toListDTO(List<ProdutoEntity> entityList) {
         return entityList.stream().map(this::toDTO).toList();
     }

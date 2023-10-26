@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.lang.String.format;
+
 @Service
 @RequiredArgsConstructor
 public class FakeApiService {
@@ -18,11 +20,19 @@ public class FakeApiService {
 
     private final ProdutoService produtoService;
     public List<ProductsDTO> buscaListaProducts() {
-        List<ProductsDTO> dto = client.buscaListaProducts();
-        dto.forEach(produto -> {
-            produtoService.salvaProduto(converter.toEntity(produto));
+        try {
+
+            List<ProductsDTO> dto = client.buscaListaProducts();
+            dto.forEach(produto -> {
+                        Boolean retorno = produtoService.existsPorNome(produto.getNome());
+                        if(retorno == false) {
+                            produtoService.salvaProduto(converter.toEntity(produto));
+                        }
             }
-        );
-        return dto;
+            );
+            return produtoService.buscaTodosProdutos();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar e gravar produtos no banco de dados");
+        }
     }
 }
